@@ -1,0 +1,14 @@
+{
+  "name": "periscope",
+  "version": "0.1.0",
+  "description": "Игра «Морской бой — перископ» по мотивам советского игрового автомата",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "node server.js",
+    "test": "node --test"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

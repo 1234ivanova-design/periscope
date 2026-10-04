@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Морской бой — перископ</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <canvas id="view"></canvas>
+
+    <div id="hud">
+      <div class="cell"><span class="label">Пеленг</span><span id="hud-heading" class="value">000°</span></div>
+      <div class="cell">
+        <span class="label">Торпеды</span><span id="hud-ammo" class="value">10</span><span id="hud-pips" class="pips"></span>
+      </div>
+      <div class="cell"><span class="label">Потоплено</span><span id="hud-sunk" class="value">0</span></div>
+      <div class="cell"><span class="label">Тоннаж</span><span id="hud-tonnage" class="value">0 т</span></div>
+    </div>
+
+    <div id="message" hidden></div>
+    <div id="hint">Щёлкните по перископу, чтобы управлять мышью · ← → поворот · Пробел или левая кнопка — пуск · Esc — отпустить мышь</div>
+
+    <div id="results" hidden>
+      <div class="panel">
+        <h1>Партия окончена</h1>
+        <table>
+          <tr><td>Потоплено тоннажа</td><td id="res-tonnage"></td></tr>
+          <tr><td>Потоплено кораблей</td><td id="res-sunk"></td></tr>
+          <tr><td>Выпущено торпед</td><td id="res-fired"></td></tr>
+          <tr><td>Попаданий</td><td id="res-hits"></td></tr>
+          <tr><td>Промахов</td><td id="res-misses"></td></tr>
+          <tr><td>Точность стрельбы</td><td id="res-accuracy"></td></tr>
+        </table>
+        <button id="new-game" type="button">Новая игра</button>
+      </div>
+    </div>
+
+    <script type="module" src="src/main.js"></script>
+  </body>
+</html>
