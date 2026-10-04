@@ -1,5 +1,9 @@
 # Морской бой — перископ
 
+[![Тесты](https://github.com/1234ivanova-design/periscope/actions/workflows/tests.yml/badge.svg)](https://github.com/1234ivanova-design/periscope/actions/workflows/tests.yml)
+
+Играть: https://1234ivanova-design.github.io/periscope/
+
 Браузерная игра по мотивам советского игрового автомата «Морской бой»: смотрите
 в перископ, берите упреждение и топите корабли с наибольшим суммарным тоннажем
 за 10 торпед (за 10 попаданий из 10 — ещё 3 призовые).
@@ -9,7 +13,7 @@
 
 ## Запуск
 
-Нужен [Node.js](https://nodejs.org) версии 20 или новее. Сторонних библиотек нет.
+Нужен [Node.js](https://nodejs.org) версии 22 или новее. Сторонних библиотек нет.
 
 ```bash
 npm start
@@ -35,7 +39,9 @@ npm start
 npm test
 ```
 
-Автотесты проверяют игровую логику (`tests/logic.test.js`).
+Автотесты проверяют игровую логику (`tests/logic.test.js`). На GitHub они запускаются
+сами на каждый запрос на слияние и на каждое изменение в `main`, на Node.js 22 и 24
+(`.github/workflows/tests.yml`). Результат — отметка у PR и значок в начале этого файла.
 
 **Режим отладки:** откройте http://localhost:8090/?debug. Тогда состояние игры
 доступно в консоли браузера (F12) как `periscope.game`.
