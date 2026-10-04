@@ -15,7 +15,7 @@ export const CONFIG = {
 
   ammo: {
     initial: 10,
-    bonus: 3,
+    bonus: 4, // увеличено для баланса: так играть интереснее
   },
 
   torpedo: {
