@@ -1,0 +1,27 @@
+# Автотесты на GitHub: запускаются на каждый запрос на слияние (PR) и на каждое
+# изменение в main. Результат — зелёная или красная отметка у PR и у коммита.
+name: Тесты
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+# Проверке нужно только читать код — больше прав не даём.
+permissions:
+  contents: read
+
+jobs:
+  tests:
+    name: tests (node ${{ matrix.node }})
+    runs-on: ubuntu-latest
+    strategy:
+      # Проверяем на поддерживаемой и на текущей версии Node.js.
+      matrix:
+        node: [22, 24]
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: ${{ matrix.node }}
+      - run: npm test
