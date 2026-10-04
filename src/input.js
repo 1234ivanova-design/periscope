@@ -3,10 +3,11 @@
 // Чтобы мышью можно было крутить перископ на 360°, указатель «захватывается»
 // (Pointer Lock): курсор прячется и не упирается в край экрана. Первый щелчок
 // по перископу только захватывает мышь, Esc — отпускает.
+// P — пауза. Клавиши определяются по положению, поэтому P работает и в русской раскладке («З»).
 
 const ARROWS = { ArrowLeft: 'left', ArrowRight: 'right' };
 
-export function createInput(canvas, config, { onRotate, onFire, onGesture }) {
+export function createInput(canvas, config, { onRotate, onFire, onGesture, onPauseToggle, onCaptureChange }) {
   const held = { left: false, right: false };
   // Если браузер не даёт захватить мышь, работаем без захвата.
   let lockFailed = typeof canvas.requestPointerLock !== 'function';
@@ -24,6 +25,7 @@ export function createInput(canvas, config, { onRotate, onFire, onGesture }) {
   }
 
   document.addEventListener('pointerlockerror', () => (lockFailed = true));
+  document.addEventListener('pointerlockchange', () => onCaptureChange(captured()));
 
   canvas.addEventListener('mousedown', (e) => {
     if (e.button !== 0) return;
@@ -45,6 +47,8 @@ export function createInput(canvas, config, { onRotate, onFire, onGesture }) {
       e.preventDefault();
       onGesture();
       if (!e.repeat) onFire(); // удержание пробела не стреляет очередью (ТЗ §3)
+    } else if (e.code === 'KeyP' && !e.repeat) {
+      onPauseToggle();
     }
   });
 
