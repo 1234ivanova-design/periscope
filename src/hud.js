@@ -42,7 +42,8 @@ export function createHud(onNewGame) {
     }
 
     let message = '';
-    if (fx.time < fx.bonusUntil) message = `${game.config.ammo.bonus} призовые торпеды`;
+    if (game.paused) message = 'Пауза — щёлкните по перископу или нажмите P';
+    else if (fx.time < fx.bonusUntil) message = `${game.config.ammo.bonus} призовые торпеды`;
     else if (isWaiting(game)) message = 'Ожидание результатов выстрелов';
     set(el.message, message);
     el.message.hidden = !message;

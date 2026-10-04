@@ -40,6 +40,7 @@ export function createGame(config, random = Math.random) {
     bonusGranted: false,
     stats: { fired: 0, hits: 0, misses: 0, sunk: 0, tonnage: 0 },
     over: false,
+    paused: false,
     spawnCooldown: 0,
     events: [],
   };
@@ -48,12 +49,19 @@ export function createGame(config, random = Math.random) {
   return game;
 }
 
+// На паузе время стоит, а поворот и пуск не работают: иначе можно было бы
+// прицелиться по замершей цели без упреждения.
+export function setPaused(game, value) {
+  game.paused = Boolean(value) && !game.over;
+}
+
 export function rotate(game, deltaDeg) {
+  if (game.paused) return;
   game.heading = normalizeAngle(game.heading + deltaDeg);
 }
 
 export function fire(game) {
-  if (game.over || game.ammo <= 0) return false;
+  if (game.over || game.paused || game.ammo <= 0) return false;
   game.ammo--;
   game.stats.fired++;
   game.torpedoes.push({
@@ -97,7 +105,7 @@ export function accuracy(stats) {
 // Один шаг игрового времени длиной dt секунд. Все перемещения умножаются
 // на dt, поэтому скорость не зависит от частоты кадров (ТЗ §11).
 export function update(game, dt) {
-  if (game.over) return;
+  if (game.over || game.paused) return;
   const { config } = game;
   game.time += dt;
 

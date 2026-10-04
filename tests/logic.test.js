@@ -8,6 +8,7 @@ import {
   update,
   fire,
   rotate,
+  setPaused,
   addShip,
   dirVector,
   relativeAngle,
@@ -257,6 +258,38 @@ test('14. Итоговый тоннаж равен сумме тоннажей: 
   shootAhead(game, 'large');
   assert.equal(game.stats.tonnage, 8000);
   assert.equal(game.stats.sunk, 3);
+});
+
+test('Пауза: время стоит, поворот и пуск не работают; после снятия всё продолжается', () => {
+  const game = emptySea();
+  const ship = addShip(game, { type: 'medium', x: 300, y: 900, course: 200, speed: 27 });
+  fire(game);
+  update(game, 0.5);
+  const shipAt = { x: ship.x, y: ship.y };
+  const torpedoAt = { x: game.torpedoes[0].x, y: game.torpedoes[0].y };
+
+  setPaused(game, true);
+  update(game, 3);
+  rotate(game, 45);
+  assert.equal(fire(game), false);
+  assert.deepEqual({ x: ship.x, y: ship.y }, shipAt);
+  assert.deepEqual({ x: game.torpedoes[0].x, y: game.torpedoes[0].y }, torpedoAt);
+  assert.equal(game.heading, 0);
+  assert.equal(game.ammo, 9);
+
+  setPaused(game, false);
+  update(game, 0.5);
+  assert.notDeepEqual({ x: ship.x, y: ship.y }, shipAt);
+  assert.equal(fire(game), true);
+});
+
+test('После конца партии пауза не включается', () => {
+  const game = emptySea();
+  for (let i = 0; i < 10; i++) fire(game);
+  runUntilResolved(game);
+  assert.equal(game.over, true);
+  setPaused(game, true);
+  assert.equal(game.paused, false);
 });
 
 test('Точность стрельбы в процентах', () => {

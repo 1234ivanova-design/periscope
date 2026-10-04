@@ -1,6 +1,6 @@
 // Точка входа: связывает логику, отображение, звук и управление в игровой цикл.
 import { CONFIG } from './config.js';
-import { createGame, update, fire, rotate, relativeAngle, bearingOf } from './logic.js';
+import { createGame, update, fire, rotate, setPaused, relativeAngle, bearingOf } from './logic.js';
 import { createRenderer } from './render.js';
 import { createAudio } from './audio.js';
 import { createInput } from './input.js';
@@ -16,8 +16,17 @@ let fx = freshEffects();
 
 const input = createInput(canvas, CONFIG, {
   onRotate: (deg) => rotate(game, deg),
-  onFire: () => fire(game),
+  // На паузе кнопка пуска не стреляет, а снимает паузу.
+  onFire: () => (game.paused ? setPaused(game, false) : fire(game)),
   onGesture: () => audio.unlock(),
+  onPauseToggle: () => setPaused(game, !game.paused),
+  // Отпустили мышь (Esc) — пауза; снова захватили щелчком — игра продолжается.
+  onCaptureChange: (captured) => setPaused(game, !captured),
+});
+
+// Свернули вкладку или переключились на другую — тоже пауза.
+document.addEventListener('visibilitychange', () => {
+  if (document.hidden) setPaused(game, true);
 });
 
 function freshEffects() {
@@ -59,9 +68,11 @@ let last = performance.now();
 function frame(now) {
   const dt = Math.min((now - last) / 1000, CONFIG.maxFrameDt);
   last = now;
-  fx.time += dt;
-  rotate(game, input.rotation(dt));
-  update(game, dt);
+  if (!game.paused) {
+    fx.time += dt; // на паузе замирают и эффекты: пламя, вспышки, сообщения
+    rotate(game, input.rotation(dt));
+    update(game, dt);
+  }
   for (const event of game.events.splice(0)) handle(event);
   fx.flashes = fx.flashes.filter((f) => fx.time - f.t < CONFIG.effects.flash);
   renderer.draw(game, fx);
