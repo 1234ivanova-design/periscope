@@ -204,16 +204,16 @@ test('10–11. Начальный боезапас 10; десять попада
     shootAhead(game);
   }
   assert.equal(game.bonusGranted, true);
-  assert.equal(game.ammo, 3);
+  assert.equal(game.ammo, 4);
 
-  for (let i = 0; i < 3; i++) {
+  for (let i = 0; i < 4; i++) {
     rotate(game, 36);
     shootAhead(game);
   }
   for (let i = 0; i < 200 && !game.over; i++) update(game, 0.05);
   assert.equal(game.over, true);
-  assert.equal(game.stats.fired, 13, 'призовые попадания не дают новых выстрелов');
-  assert.equal(game.stats.hits, 13);
+  assert.equal(game.stats.fired, 14, 'призовые попадания не дают новых выстрелов');
+  assert.equal(game.stats.hits, 14);
   assert.equal(game.events.filter((e) => e.type === 'bonus').length, 1);
 });
 
