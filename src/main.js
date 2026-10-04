@@ -68,8 +68,10 @@ let last = performance.now();
 function frame(now) {
   const dt = Math.min((now - last) / 1000, CONFIG.maxFrameDt);
   last = now;
+  // Пламя и вспышки идут и на паузе: иначе вспышка, пойманная паузой,
+  // застывает на полной яркости и засвечивает обзор. Корабли и торпеды стоят.
+  fx.time += dt;
   if (!game.paused) {
-    fx.time += dt; // на паузе замирают и эффекты: пламя, вспышки, сообщения
     rotate(game, input.rotation(dt));
     update(game, dt);
   }
