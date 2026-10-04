@@ -81,5 +81,43 @@ export function createAudio() {
     noiseBurst(out, t, { type: 'lowpass', from: 3500, to: 120, q: 0.5, gain: 0.9 * loud, attack: 0.01, decay: 2.2 });
   }
 
-  return { unlock, launch, explosion };
+  // Залп салюта: хлопок и треск рассыпающихся искр.
+  function salute(pan) {
+    if (!ctx) return;
+    const t = ctx.currentTime;
+    const out = output(pan * 0.8);
+    thump(out, t, { from: 160, to: 50, gain: 0.5, decay: 0.25 });
+    noiseBurst(out, t + 0.05, { type: 'highpass', from: 3000, to: 1500, q: 0.7, gain: 0.25, attack: 0.01, decay: 0.6 });
+  }
+
+  // Сигнал горна: восходящие ноты соль — до — ми — соль.
+  function bugle() {
+    if (!ctx) return;
+    const out = output(0);
+    const notes = [
+      [392.0, 0, 0.16],
+      [523.25, 0.18, 0.16],
+      [659.25, 0.36, 0.16],
+      [783.99, 0.54, 0.7],
+    ]; // [частота, начало, длительность]
+    for (const [freq, at, len] of notes) {
+      const t = ctx.currentTime + at;
+      const osc = ctx.createOscillator();
+      osc.type = 'sawtooth';
+      osc.frequency.setValueAtTime(freq, t);
+      const filter = ctx.createBiquadFilter();
+      filter.type = 'lowpass';
+      filter.frequency.value = 2200; // смягчаем «пилу» до медного тембра
+      const env = ctx.createGain();
+      env.gain.setValueAtTime(0.0001, t);
+      env.gain.exponentialRampToValueAtTime(0.22, t + 0.03);
+      env.gain.setValueAtTime(0.22, t + len - 0.05);
+      env.gain.exponentialRampToValueAtTime(0.0001, t + len);
+      osc.connect(filter).connect(env).connect(out);
+      osc.start(t);
+      osc.stop(t + len + 0.05);
+    }
+  }
+
+  return { unlock, launch, explosion, salute, bugle };
 }
