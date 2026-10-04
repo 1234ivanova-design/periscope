@@ -119,9 +119,117 @@ body {
   background: rgba(0, 0, 0, 0.6);
 }
 
+/* Поздравление за 10 из 10: салют и табличка в стиле милитари */
+#fireworks {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+#fireworks.dim {
+  background: rgba(0, 0, 0, 0.35);
+}
+
+#celebration {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 16px;
+}
+
+.award-panel {
+  max-width: 580px;
+  padding: 18px 32px 16px;
+  text-align: center;
+  color: #f3ead2;
+  background:
+    repeating-linear-gradient(135deg, rgba(0, 0, 0, 0.07) 0 12px, transparent 12px 24px),
+    linear-gradient(#5b6532, #3c4421);
+  border: 3px solid #c9a227;
+  outline: 2px solid #2b3016;
+  outline-offset: -9px;
+  border-radius: 6px;
+  box-shadow: 0 18px 60px rgba(0, 0, 0, 0.6);
+  animation: award-in 0.5s cubic-bezier(0.2, 1.4, 0.4, 1) both;
+}
+
+.emblem {
+  width: 104px;
+  height: 104px;
+  margin-top: -70px;
+  filter: drop-shadow(0 6px 10px rgba(0, 0, 0, 0.5));
+}
+
+#cel-title {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin: 4px 0 10px;
+  font: 400 26px/1.15 Impact, 'Arial Black', sans-serif;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #ffd34d;
+  text-shadow: 0 2px 0 #2b3016;
+}
+
+.star-sm {
+  flex: none;
+  width: 28px;
+  height: 28px;
+}
+
+.cel-score {
+  margin: 0 0 10px;
+  font-size: 17px;
+  letter-spacing: 0.04em;
+}
+
+.cel-award {
+  margin: 0 0 14px;
+  padding: 8px 12px;
+  font-size: 18px;
+  background: rgba(150, 18, 18, 0.9);
+  border: 1px solid #ffd34d;
+}
+
+.cel-award strong {
+  color: #ffd34d;
+  white-space: nowrap;
+}
+
+.cel-continue {
+  margin: 0;
+  font-size: 12px;
+  letter-spacing: 0.05em;
+  color: #c8c2a8;
+}
+
+@keyframes award-in {
+  from {
+    transform: translateY(-40px) scale(0.85);
+    opacity: 0;
+  }
+  to {
+    transform: none;
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .award-panel {
+    animation: none;
+  }
+}
+
 #results[hidden],
 #message[hidden],
-#hint[hidden] {
+#hint[hidden],
+#celebration[hidden],
+#fireworks[hidden] {
   display: none;
 }
 
@@ -179,5 +287,16 @@ body {
     width: calc(100% - 32px);
     white-space: normal;
     text-align: center;
+  }
+  .award-panel {
+    padding: 14px 16px 12px;
+  }
+  #cel-title {
+    font-size: 20px;
+    gap: 8px;
+  }
+  .star-sm {
+    width: 20px;
+    height: 20px;
   }
 }

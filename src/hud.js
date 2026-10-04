@@ -1,8 +1,17 @@
 // Текстовая часть интерфейса поверх перископа (ТЗ §9–10): показатели,
-// сообщения и итоговый экран. Разметка — в index.html.
+// сообщения, поздравление за 10 из 10 и итоговый экран. Разметка — в index.html.
 import { isWaiting, accuracy } from './logic.js';
 
 const fmt = (n) => n.toLocaleString('ru-RU');
+
+// 1 призовая торпеда, 3 призовые торпеды, 5 призовых торпед.
+function plural(n, one, few, many) {
+  const m10 = n % 10;
+  const m100 = n % 100;
+  if (m10 === 1 && m100 !== 11) return one;
+  if (m10 >= 2 && m10 <= 4 && (m100 < 12 || m100 > 14)) return few;
+  return many;
+}
 
 export function createHud(onNewGame) {
   const $ = (id) => document.getElementById(id);
@@ -15,6 +24,7 @@ export function createHud(onNewGame) {
     message: $('message'),
     hint: $('hint'),
     results: $('results'),
+    celebration: $('celebration'),
   };
   $('new-game').addEventListener('click', onNewGame);
   let pipsFor = '';
@@ -42,12 +52,24 @@ export function createHud(onNewGame) {
     }
 
     let message = '';
-    if (game.paused) message = 'Пауза — щёлкните по перископу или нажмите P';
-    else if (fx.time < fx.bonusUntil) message = `${game.config.ammo.bonus} призовые торпеды`;
+    if (fx.celebratingSince) message = ''; // вместо надписи — табличка с поздравлением
+    else if (game.paused) message = 'Пауза — щёлкните по перископу или нажмите P';
     else if (isWaiting(game)) message = 'Ожидание результатов выстрелов';
     set(el.message, message);
     el.message.hidden = !message;
-    el.hint.hidden = mouseCaptured || game.over;
+    el.hint.hidden = mouseCaptured || game.over || Boolean(fx.celebratingSince);
+  }
+
+  function showCelebration(config) {
+    const n = config.ammo.initial;
+    const bonus = config.ammo.bonus;
+    $('cel-score').textContent = `${n} из ${n} — все цели поражены`;
+    $('cel-award').textContent = `${bonus} ${plural(bonus, 'призовая торпеда', 'призовые торпеды', 'призовых торпед')}`;
+    el.celebration.hidden = false;
+  }
+
+  function hideCelebration() {
+    el.celebration.hidden = true;
   }
 
   function showResults(stats) {
@@ -65,5 +87,5 @@ export function createHud(onNewGame) {
     el.results.hidden = true;
   }
 
-  return { update, showResults, hideResults };
+  return { update, showCelebration, hideCelebration, showResults, hideResults };
 }
